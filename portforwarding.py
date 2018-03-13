@@ -37,7 +37,6 @@ import sys
 import os
 
 
-
 '''
 Function readFromFile: Reads from the text file that contains the 
                        sourceAddress:sourceIP +
@@ -78,6 +77,32 @@ def readFromFile():
     print ("Destination IP Address" + str(destAddress))
     print ("Destination Port Number: " + str(destPort))    
     
+    # now we want to make the 
+    network = Network(sourceIP, sourcePort, destIP, destPort)
+    
+'''
+Class: Network
+Purpose: We want to create an object reference that will hold these attributes
+         that represents a specific network connection between two different
+         client machines. In our config file, we can have more than two sets
+         of network interfaces trying to communicate with one another. If 
+         more are added --> will create a new object reference for it. 
+'''
+class Network(object):
+    sourceIP = ""
+    sourcePort = ""
+    destIP = ""
+    destPort = ""
+    
+    def __init__(self, sourceIP, sourcePort, destIP, destPort):
+        sourceIP = self.sourceIP
+        sourcePort = self.sourcePort
+        destIP = self.destIP
+        destPort = self.destPort
+        
+def sendData():
+    return;
+
 
 if __name__ == "__main__":
     sourceIP = []
