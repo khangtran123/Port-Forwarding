@@ -1,10 +1,9 @@
 #!/bin/python2
 
 '''
-File: Client.py
-Date: February 18, 2018
+File: client.py
+Date: March 30, 2018
 Designers: Huu Khang Tran, Anderson Phan
-File location: C:/xampp/htdocs/acit4850lab04/client.py
 Description: This scripts covers the general client that will spawn a bunch of
              other clients to connect to either the multi-threaded, select, or
              epoll servers.
@@ -30,14 +29,14 @@ global totalRequests
 global totalRequests
 
 #  THis function invokes multi-threading to create multiple clients
-def spawn_clients(machineAddr, clients, serverAddr, serverPort, echoedMsg, echoedNUM, totalRequests, output_file):
+def spawn_clients(machineAddr, clients, portForwarderAddr, portForwarderPort, echoedMsg, echoedNUM, totalRequests, output_file):
     threadQueue = []
     clientID = 1
     totalMessages = ""
     totalRTT = 0
     for i in range(clients):
         #  threading.Thread() starts a new thread and passes in args
-        thread = threading.Thread(target=start_engine, args=(i, machineAddr, clients, serverAddr, serverPort, echoedMsg, echoedNUM, totalRequests, output_file, totalMessages, totalRTT))
+        thread = threading.Thread(target=start_engine, args=(i, machineAddr, clients, portForwarderAddr, portForwarderPort, echoedMsg, echoedNUM, totalRequests, output_file, totalMessages, totalRTT))
         #  now we want to load up the array "threadQueue"
         threadQueue.append(thread)
         print ("Starting Client #" + str(clientID))
@@ -49,12 +48,12 @@ def spawn_clients(machineAddr, clients, serverAddr, serverPort, echoedMsg, echoe
         thread.join()
 
 
-def start_engine(clientID, machineAddr, clients, serverAddr, serverPort, echoedMsg, echoedNUM, totalRequests, output_file, totalMessages, totalRTT):
+def start_engine(clientID, machineAddr, clients, portForwarderAddr, portForwarderPort, echoedMsg, echoedNUM, totalRequests, output_file, totalMessages, totalRTT):
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((serverAddr, serverPort))
+    s.connect((portForwarderAddr, portForwarderPort))
     done = ""
-    
+
     # this iterates through the user-specified number of echoes that will be sent out
     for i in range(echoedNUM + 1):
         # start the time once msg is sent to server
@@ -85,7 +84,7 @@ def start_engine(clientID, machineAddr, clients, serverAddr, serverPort, echoedM
         clientSleep = random.randint(0,9)
         time.sleep(clientSleep)
         i += 1
-		
+
     #  now we want to output the results of this echo stats to the log file
     output_file.write("\n Client #" + str(clientID) + " sent out a total of " + str(echoedNUM) + " messages with a total roundtrip time of " + str(RTT) + " seconds.")
     output_file.write("\n")
@@ -105,9 +104,10 @@ def result_to_file(clients, totalRTT, avgRTT, totalMessages, totalRequests, outp
 
 def main():
 
-    #serverAddr = raw_input("Enter the server ip address: ")
-    serverAddr = '192.168.0.11'
-    serverPort = 7005
+    #portForwarderAddr = raw_input("Enter the server ip address: ")
+
+    portForwarderAddr = '192.168.0.11'
+    portForwarderPort = 7007
 
     #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #s.connect((serverIP, port))
@@ -115,9 +115,9 @@ def main():
     signal(SIGPIPE, SIG_DFL)
 
     #machineAddr = raw_input("What is your IP Address? (i.e. 192.168.0.X) ")
-    machineAddr = '192.168.0.10'
+    machineAddr = '192.168.0.11'
     #clients = raw_input("How many clients would you like to spawn? (Enter an Integer value) ")
-    clients = '4000'
+    clients = '800'
     #echoedMsg = raw_input("What do you want to echo to the server? (Enter a string) ")
 	# the data we will be sending is 2000 Bytes in size
     echoedMsg = """Hey there server. It's me, your friendly neighbour Spiderman. Wait is that even right? Spiderman is the
@@ -143,7 +143,7 @@ def main():
             print ("The message cannot be null! You must send something")
             echoedMsg = raw_input("What do you want to echo to the server? (Enter a string)")
         else:
-            spawn_clients(machineAddr, int(clients), serverAddr, serverPort, echoedMsg, int(echoedNUM), totalRequests, output_file)
+            spawn_clients(machineAddr, int(clients), portForwarderAddr, portForwarderPort, echoedMsg, int(echoedNUM), totalRequests, output_file)
 
 
 if __name__ == "__main__": main()
