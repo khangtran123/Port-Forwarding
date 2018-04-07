@@ -129,7 +129,7 @@ def main():
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     host = '0.0.0.0'
-    port = 7005
+    port = 7006
     #listens up to 50 connections/clients. depending on how many incoming connections this may be raised
     epoll.register(serverSocket.fileno(), select.EPOLLIN | select.EPOLLET)
     connections.update({serverSocket.fileno(): serverSocket})
@@ -171,5 +171,5 @@ def main():
         serverSocket.close()
         sys.exit(0)
 
-		
+
 if __name__ == "__main__": main()
